@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart ATM</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- =========================
+         ATM CONTAINER
+    ========================== -->
+    <div class="atm-container">
+
+        <!-- =========================
+             LOGIN SCREEN
+        ========================== -->
+        <section id="loginScreen" class="screen login-screen">
+
+            <div class="login-card">
+
+                <div class="brand">
+                    <div class="brand-icon">🏦</div>
+
+                    <div>
+                        <h1>SMART ATM</h1>
+                        <p>Your Secure Banking Partner</p>
+                    </div>
+                </div>
+
+                <div class="welcome-content">
+
+                    <div class="atm-image">
+                        🏧
+                    </div>
+
+                    <h2>Welcome!</h2>
+
+                    <p>
+                        Please enter your PIN to access your account.
+                    </p>
+
+                    <!-- PIN dots -->
+                    <div class="pin-display" id="pinDisplay">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <p class="attempt-text" id="attemptText">
+                        Enter your 4-digit PIN
+                    </p>
+
+                    <!-- PIN keypad -->
+                    <div class="keypad">
+
+                        <button onclick="enterPin('1')">1</button>
+                        <button onclick="enterPin('2')">2</button>
+                        <button onclick="enterPin('3')">3</button>
+
+                        <button onclick="enterPin('4')">4</button>
+                        <button onclick="enterPin('5')">5</button>
+                        <button onclick="enterPin('6')">6</button>
+
+                        <button onclick="enterPin('7')">7</button>
+                        <button onclick="enterPin('8')">8</button>
+                        <button onclick="enterPin('9')">9</button>
+
+                        <button class="key-clear" onclick="clearPin()">Clear</button>
+                        <button onclick="enterPin('0')">0</button>
+                        <button class="key-back" onclick="removePin()">←</button>
+
+                    </div>
+
+                    <button class="login-btn" onclick="login()">
+                        Enter PIN
+                    </button>
+
+                    <div id="loginMessage" class="message"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             DASHBOARD
+        ========================== -->
+        <section id="dashboardScreen" class="screen hidden">
+
+            <header class="topbar">
+
+                <div class="brand-small">
+                    <span>🏦</span>
+                    <strong>SMART ATM</strong>
+                </div>
+
+                <div class="user-info">
+                    <span>Welcome, <strong id="userName">User</strong></span>
+                    <div class="user-avatar">A</div>
+                </div>
+
+            </header>
+
+
+            <main class="dashboard">
+
+                <!-- Balance Card -->
+                <div class="balance-card">
+
+                    <div>
+                        <p>Available Balance</p>
+
+                        <h1 id="balanceAmount">
+                            Rs. 25,000
+                        </h1>
+                    </div>
+
+                    <div class="balance-icon">
+                        💰
+                    </div>
+
+                </div>
+
+
+                <!-- ATM Options -->
+                <div class="menu-grid">
+
+                    <button class="menu-card" onclick="showSection('balanceSection')">
+                        <div class="menu-icon green">💰</div>
+                        <h3>Check Balance</h3>
+                        <p>View account balance</p>
+                    </button>
+
+                    <button class="menu-card" onclick="showSection('withdrawSection')">
+                        <div class="menu-icon blue">💵</div>
+                        <h3>Withdraw Cash</h3>
+                        <p>Take cash from account</p>
+                    </button>
+
+                    <button class="menu-card" onclick="showSection('depositSection')">
+                        <div class="menu-icon purple">💳</div>
+                        <h3>Deposit Cash</h3>
+                        <p>Add money to account</p>
+                    </button>
+
+                    <button class="menu-card" onclick="showSection('transferSection')">
+                        <div class="menu-icon orange">🔄</div>
+                        <h3>Transfer Money</h3>
+                        <p>Send money to account</p>
+                    </button>
+
+                    <button class="menu-card" onclick="showSection('historySection')">
+                        <div class="menu-icon red">📜</div>
+                        <h3>Transaction History</h3>
+                        <p>View recent transactions</p>
+                    </button>
+
+                    <button class="menu-card" onclick="showSection('pinSection')">
+                        <div class="menu-icon dark">🔐</div>
+                        <h3>Change PIN</h3>
+                        <p>Update your PIN</p>
+                    </button>
+
+                </div>
+
+
+                <!-- Logout -->
+                <button class="logout-btn" onclick="showLogout()">
+                    🚪 Logout
+                </button>
+
+            </main>
+
+        </section>
+
+
+        <!-- =========================
+             TRANSACTION AREA
+        ========================== -->
+
+        <section id="transactionScreen" class="screen hidden">
+
+            <header class="topbar">
+
+                <div class="brand-small">
+                    <span>🏦</span>
+                    <strong>SMART ATM</strong>
+                </div>
+
+                <button class="back-btn" onclick="backToDashboard()">
+                    ← Dashboard
+                </button>
+
+            </header>
+
+
+            <main class="transaction-container">
+
+
+                <!-- =================
+                     BALANCE
+                ================== -->
+
+                <div id="balanceSection" class="transaction-section hidden">
+
+                    <div class="section-header">
+                        <span class="large-icon">💰</span>
+
+                        <div>
+                            <h2>Account Balance</h2>
+                            <p>Your current available balance</p>
+                        </div>
+                    </div>
+
+                    <div class="big-balance">
+                        <p>Available Balance</p>
+                        <h1 id="balanceDisplay">Rs. 25,000</h1>
+                    </div>
+
+                    <button class="primary-btn" onclick="backToDashboard()">
+                        Done
+                    </button>
+
+                </div>
+
+
+                <!-- =================
+                     WITHDRAW
+                ================== -->
+
+                <div id="withdrawSection" class="transaction-section hidden">
+
+                    <div class="section-header">
+                        <span class="large-icon">💵</span>
+
+                        <div>
+                            <h2>Withdraw Cash</h2>
+                            <p>Enter the amount you want to withdraw</p>
+                        </div>
+                    </div>
+
+
+                    <label>Enter Amount</label>
+
+                    <div class="amount-input">
+                        <span>Rs.</span>
+
+                        <input
+                            type="number"
+                            id="withdrawAmount"
+                            placeholder="5000"
+                            min="500"
+                        >
+                    </div>
+
+
+                    <p class="quick-label">Quick Amount</p>
+
+                    <div class="quick-buttons">
+
+                        <button onclick="setWithdrawAmount(1000)">
+                            Rs. 1,000
+                        </button>
+
+                        <button onclick="setWithdrawAmount(2000)">
+                            Rs. 2,000
+                        </button>
+
+                        <button onclick="setWithdrawAmount(5000)">
+                            Rs. 5,000
+                        </button>
+
+                        <button onclick="setWithdrawAmount(10000)">
+                            Rs. 10,000
+                        </button>
+
+                        <button onclick="setWithdrawAmount(20000)">
+                            Rs. 20,000
+                        </button>
+
+                    </div>
+
+
+                    <div id="withdrawMessage" class="message"></div>
+
+                    <button class="primary-btn" onclick="withdrawMoney()">
+                        Continue
+                    </button>
+
+                    <button class="secondary-btn" onclick="backToDashboard()">
+                        Cancel
+                    </button>
+
+                </div>
+
+
+                <!-- =================
+                     DEPOSIT
+                ================== -->
+
+                <div id="depositSection" class="transaction-section hidden">
+
+                    <div class="section-header">
+                        <span class="large-icon">💳</span>
+
+                        <div>
+                            <h2>Deposit Cash</h2>
+                            <p>Enter the amount you want to deposit</p>
+                        </div>
+                    </div>
+
+
+                    <label>Enter Amount</label>
+
+                    <div class="amount-input">
+                        <span>Rs.</span>
+
+                        <input
+                            type="number"
+                            id="depositAmount"
+                            placeholder="5000"
+                            min="100"
+                        >
+                    </div>
+
+
+                    <p class="quick-label">Quick Amount</p>
+
+                    <div class="quick-buttons">
+
+                        <button onclick="setDepositAmount(1000)">
+                            Rs. 1,000
+                        </button>
+
+                        <button onclick="setDepositAmount(2000)">
+                            Rs. 2,000
+                        </button>
+
+                        <button onclick="setDepositAmount(5000)">
+                            Rs. 5,000
+                        </button>
+
+                        <button onclick="setDepositAmount(10000)">
+                            Rs. 10,000
+                        </button>
+
+                        <button onclick="setDepositAmount(20000)">
+                            Rs. 20,000
+                        </button>
+
+                    </div>
+
+
+                    <div id="depositMessage" class="message"></div>
+
+                    <button class="primary-btn" onclick="depositMoney()">
+                        Deposit Cash
+                    </button>
+
+                    <button class="secondary-btn" onclick="backToDashboard()">
+                        Cancel
+                    </button>
+
+                </div>
+
+
+                <!-- =================
+                     TRANSFER
+                ================== -->
+
+                <div id="transferSection" class="transaction-section hidden">
+
+                    <div class="section-header">
+                        <span class="large-icon">🔄</span>
+
+                        <div>
+                            <h2>Transfer Money</h2>
+                            <p>Send money to another account</p>
+                        </div>
+                    </div>
+
+
+                    <label>Recipient Account Number</label>
+
+                    <input
+                        class="form-input"
+                        type="text"
+                        id="accountNumber"
+                        placeholder="1234 5678 9012"
+                    >
+
+
+                    <label>Amount</label>
+
+                    <div class="amount-input">
+                        <span>Rs.</span>
+
+                        <input
+                            type="number"
+                            id="transferAmount"
+                            placeholder="3000"
+                        >
+                    </div>
+
+
+                    <label>Remarks <span>(Optional)</span></label>
+
+                    <input
+                        class="form-input"
+                        type="text"
+                        id="remarks"
+                        placeholder="e.g. Groceries"
+                    >
+
+
+                    <div id="transferMessage" class="message"></div>
+
+                    <button class="primary-btn" onclick="transferMoney()">
+                        Transfer Money
+                    </button>
+
+                    <button class="secondary-btn" onclick="backToDashboard()">
+                        Cancel
+                    </button>
+
+                </div>
+
+
+                <!-- =================
+                     HISTORY
+                ================== -->
+
+                <div id="historySection" class="transaction-section hidden">
+
+                    <div class="section-header">
+
+                        <span class="large-icon">📜</span>
+
+                        <div>
+                            <h2>Transaction History</h2>
+                            <p>Your recent transactions</p>
+                        </div>
+
+                    </div>
+<div class="history-container" id="historyContainer">
+
+</div>
+
+<button class="clear-history-btn" onclick="clearHistory()">
+    🗑️ Clear History
+</button>
+
+<button class="primary-btn" onclick="backToDashboard()">
+    Done
+</button>
+
+                    
+
+
+                </div>
+
+
+                <!-- =================
+                     CHANGE PIN
+                ================== -->
+
+                <div id="pinSection" class="transaction-section hidden">
+
+                    <div class="section-header">
+
+                        <span class="large-icon">🔐</span>
+
+                        <div>
+                            <h2>Change PIN</h2>
+                            <p>Update your account PIN</p>
+                        </div>
+
+                    </div>
+
+
+                    <label>Current PIN</label>
+
+                    <input
+                        class="form-input"
+                        type="password"
+                        id="currentPin"
+                        maxlength="4"
+                        placeholder="••••"
+                    >
+
+
+                    <label>New PIN</label>
+
+                    <input
+                        class="form-input"
+                        type="password"
+                        id="newPin"
+                        maxlength="4"
+                        placeholder="••••"
+                    >
+
+
+                    <label>Confirm New PIN</label>
+
+                    <input
+                        class="form-input"
+                        type="password"
+                        id="confirmPin"
+                        maxlength="4"
+                        placeholder="••••"
+                    >
+
+
+                    <div id="pinMessage" class="message"></div>
+
+
+                    <button class="primary-btn" onclick="changePin()">
+                        Change PIN
+                    </button>
+
+                    <button class="secondary-btn" onclick="backToDashboard()">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </main>
+
+        </section>
+
+
+        <!-- =========================
+             MODAL
+        ========================== -->
+
+        <div id="modal" class="modal hidden">
+
+            <div class="modal-box">
+
+                <div id="modalIcon" class="modal-icon">
+                    ✓
+                </div>
+
+                <h2 id="modalTitle">
+                    Transaction Successful
+                </h2>
+
+                <p id="modalText">
+                    Your transaction has been completed successfully.
+                </p>
+
+                <button class="primary-btn" onclick="closeModal()">
+                    OK
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             LOGOUT MODAL
+        ========================== -->
+
+        <div id="logoutModal" class="modal hidden">
+
+            <div class="modal-box">
+
+                <div class="modal-icon logout-icon">
+                    🚪
+                </div>
+
+                <h2>Do you want to logout?</h2>
+
+                <p>
+                    Please make sure you have taken your card.
+                </p>
+
+                <div class="modal-buttons">
+
+                    <button class="primary-btn" onclick="logout()">
+                        Yes, Logout
+                    </button>
+
+                    <button class="secondary-btn" onclick="closeLogout()">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
